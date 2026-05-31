@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STADTBAD — Miami Vice Glow-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Monoton&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#150a2e;
+    --night2:#1e0d44;
+    --panel:rgba(40,16,82,.45);
+    --pink:#ff2e88;
+    --magenta:#ff4fb0;
+    --cyan:#27e8d6;
+    --purple:#9b4dff;
+    --orange:#ff8a4c;
+    --sun:#ffd166;
+    --text:#f0e6ff;
+    --dim:#b9a7df;
+    --line:rgba(155,77,255,.34);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--night);
+    color:var(--text);
+    font-family:'Hanken Grotesk',sans-serif;
+    font-weight:400;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  /* synthwave night + grid floor */
+  .bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(120% 80% at 50% -20%, rgba(255,46,136,.30), transparent 55%),
+      radial-gradient(90% 60% at 80% 0%, rgba(155,77,255,.30), transparent 60%),
+      radial-gradient(80% 60% at 10% 10%, rgba(39,232,214,.16), transparent 60%),
+      linear-gradient(180deg,#1b0b3a,#120826 70%);
+  }
+  .bg::after{content:"";position:absolute;left:-20%;right:-20%;bottom:-2%;height:42vh;
+    background-image:linear-gradient(rgba(39,232,214,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(39,232,214,.5) 1px,transparent 1px);
+    background-size:46px 46px;transform:perspective(38vh) rotateX(68deg);transform-origin:bottom;opacity:.22;
+    -webkit-mask-image:linear-gradient(transparent,#000 70%);mask-image:linear-gradient(transparent,#000 70%);}
+  main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:0 22px 90px}
+
+  header{padding:80px 0 50px;text-align:center;position:relative}
+  .kicker{font-family:'Monoton';color:var(--cyan);letter-spacing:.18em;font-size:.95rem;
+    text-shadow:0 0 10px rgba(39,232,214,.7);opacity:0;animation:rise .8s .1s forwards}
+  h1{font-family:'Bungee';font-size:clamp(3.6rem,15vw,9.5rem);line-height:.9;letter-spacing:.01em;
+    text-transform:uppercase;margin:.1em 0 .12em;color:var(--text);
+    text-shadow:0 0 1px var(--pink);opacity:0;animation:rise .9s .2s forwards}
+  h1 .a{color:var(--pink);text-shadow:0 0 8px rgba(255,46,136,.9),0 0 26px rgba(255,46,136,.55),0 0 60px rgba(255,46,136,.3)}
+  h1 .b{color:var(--cyan);text-shadow:0 0 8px rgba(39,232,214,.9),0 0 26px rgba(39,232,214,.55),0 0 60px rgba(39,232,214,.3);animation:flick 7s 1.4s infinite}
+  .tagline{font-family:'Monoton';font-size:clamp(.85rem,3vw,1.25rem);color:var(--sun);
+    text-shadow:0 0 12px rgba(255,209,102,.6);opacity:0;animation:rise .9s .35s forwards}
+  .meta{margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;opacity:0;animation:rise .9s .5s forwards}
+  .chip{border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:.78rem;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--dim);background:rgba(255,255,255,.03)}
+  .chip b{color:var(--cyan);font-weight:700}
+  .kicker,h1,.tagline,.meta{transform:translateY(14px)}
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  @keyframes flick{0%,17%,21%,24%,55%,59%,100%{opacity:1}19%,23%,57%{opacity:.4}}
+
+  section{margin-top:58px}
+  .sec-no{font-family:'Monoton';color:var(--purple);font-size:.85rem;letter-spacing:.2em;text-shadow:0 0 10px rgba(155,77,255,.5)}
+  h2{font-family:'Bungee';font-size:clamp(1.5rem,4.6vw,2.4rem);line-height:1.05;text-transform:uppercase;
+    margin:.2em 0 .55em;color:var(--text)}
+  h2 .p{color:var(--pink)} h2 .c{color:var(--cyan)}
+  p.lead{font-size:1.1rem;color:#e3d6ff}
+  p+p{margin-top:.85em}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:16px 0 0}
+
+  .swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .sw{flex:1 1 105px;min-width:105px;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+  .sw .b{height:52px} .sw .t{padding:7px 10px;font-size:.72rem;letter-spacing:.04em;background:var(--night2);color:var(--dim)}
+
+  .sketch{margin-top:24px;border:1px solid var(--line);border-radius:14px;
+    background:linear-gradient(180deg,rgba(155,77,255,.14),rgba(18,8,38,.5));padding:22px 18px}
+  .sketch svg{width:100%;height:auto;display:block}
+  .cap{font-family:'Monoton';color:var(--dim);font-size:.78rem;letter-spacing:.06em;margin-top:12px;text-align:center}
+
+  .steps{margin-top:6px}
+  .step{position:relative;padding:15px 16px 15px 62px;border:1px solid var(--line);border-radius:12px;margin-top:11px;
+    background:rgba(255,255,255,.02);transition:transform .25s,border-color .25s;counter-increment:s}
+  .step:hover{transform:translateX(4px);border-color:var(--pink)}
+  .steps{counter-reset:s}
+  .step::before{content:counter(s);position:absolute;left:13px;top:13px;width:34px;height:34px;border-radius:50%;
+    display:grid;place-items:center;font-family:'Bungee';font-size:.95rem;color:var(--night);
+    background:linear-gradient(135deg,var(--cyan),var(--pink))}
+  .step h4{font-family:'Hanken Grotesk';font-weight:700;font-size:1.08rem;color:var(--text);margin-bottom:2px}
+  .step small{color:var(--dim);font-size:.95rem}
+
+  .callout{margin-top:22px;border:1px solid var(--orange);border-radius:12px;
+    background:linear-gradient(120deg,rgba(255,138,76,.14),transparent);padding:18px 20px}
+  .callout h4{font-family:'Bungee';text-transform:uppercase;color:var(--orange);font-size:1.02rem;margin-bottom:8px}
+  .callout ul{margin:.3em 0 0 1.05em} .callout li{margin:.3em 0;color:#ecdfff}
+  .callout b{color:var(--sun)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px;margin-top:8px}
+  .card{border:1px solid var(--line);border-radius:14px;padding:20px;
+    background:linear-gradient(180deg,rgba(155,77,255,.16),rgba(18,8,38,.4));
+    transition:transform .28s,box-shadow .28s,border-color .28s}
+  .card:hover{transform:translateY(-5px);border-color:var(--cyan);box-shadow:0 14px 40px rgba(255,46,136,.18)}
+  .card .ic{font-size:1.7rem}
+  .card h4{font-family:'Bungee';font-size:1.02rem;text-transform:uppercase;color:var(--text);margin:8px 0 6px}
+  .card p{font-size:.96rem;color:#d8c9f5}
+
+  .tablewrap{margin-top:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:.96rem}
+  thead th{font-family:'Bungee';text-transform:uppercase;font-weight:400;background:rgba(155,77,255,.28);
+    color:var(--cyan);padding:13px 14px;text-align:left;font-size:.82rem;letter-spacing:.03em}
+  thead th.num{text-align:right}
+  tbody td{padding:11px 14px;border-top:1px solid rgba(155,77,255,.16);color:#e3d6ff}
+  tbody td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+  tbody td.item{color:var(--text)}
+  tbody tr:hover{background:rgba(39,232,214,.05)}
+  tfoot td{padding:14px;border-top:2px solid var(--pink);font-family:'Bungee';font-size:1rem;color:var(--text);background:rgba(255,46,136,.12)}
+  tfoot td.num{text-align:right;color:var(--cyan)}
+  .src{margin-top:14px;font-size:.9rem;color:var(--dim)} .src b{color:var(--cyan)}
+
+  .foot{margin-top:60px;border-top:1px solid var(--line);padding-top:24px;font-size:.95rem;color:var(--dim)}
+  .foot b{color:var(--cyan)}
+  @media print{.bg{position:absolute}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<main>
+  <header>
+    <div class="kicker">Miami Vice × midnight pool · ~€100 glow-up</div>
+    <h1><span class="a">STADT</span><span class="b">BAD</span></h1>
+    <div class="tagline">eintritt frei · ausgang fraglich</div>
+    <div class="meta">
+      <span class="chip">Counter · <b>2.40 m</b></span>
+      <span class="chip">Glowing <b>donut</b> overhead</span>
+      <span class="chip">Iconic <b>pool ladder</b></span>
+      <span class="chip">Budget ≈ <b>€100</b></span>
+    </div>
+  </header>
+
+  <!-- 01 LOOK -->
+  <section>
+    <div class="sec-no">01 — THE LOOK</div>
+    <h2>Pool at <span class="p">midnight</span>, <span class="c">Miami</span> style</h2>
+    <p class="lead">Same bathhouse bones — dark, a little wet-looking — now lit like a 1986 pool deck after dark. Hot pink and aqua neon, a purple sunset haze, one chrome pool ladder catching the light. Cheap to pull off because it's all colour and glow, not new materials.</p>
+    <p>The trick on a tiny budget: don't rebuild anything, just transform a counter you already have (or scavenge). Paint, light, and a few iconic props do all the work.</p>
+    <div class="divider"></div>
+    <div class="swatches">
+      <div class="sw"><div class="b" style="background:#150a2e"></div><div class="t">Midnight indigo · base</div></div>
+      <div class="sw"><div class="b" style="background:#ff2e88"></div><div class="t">Hot pink · neon</div></div>
+      <div class="sw"><div class="b" style="background:#27e8d6"></div><div class="t">Aqua · the pool</div></div>
+      <div class="sw"><div class="b" style="background:#9b4dff"></div><div class="t">Purple · sunset haze</div></div>
+      <div class="sw"><div class="b" style="background:#ff8a4c"></div><div class="t">Sunset orange · pop</div></div>
+    </div>
+  </section>
+
+  <!-- 02 LAYOUT -->
+  <section>
+    <div class="sec-no">02 — LAYOUT</div>
+    <h2>One row · donut up top · ladder on the end</h2>
+    <p>2.40 m counter, lift-up hatch at one end for the server. A glowing ring hangs over the middle, a chrome pool ladder bolts to one end, and the front skirt gets dressed so the bottom isn't a dead box.</p>
+    <div class="sketch">
+      <svg viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg" font-family="'Hanken Grotesk',sans-serif">
+        <defs>
+          <linearGradient id="neon" x1="0" x2="1"><stop offset="0" stop-color="#27e8d6"/><stop offset="1" stop-color="#ff2e88"/></linearGradient>
+          <radialGradient id="glow"><stop offset="0" stop-color="#ff2e88" stop-opacity=".5"/><stop offset="1" stop-color="#ff2e88" stop-opacity="0"/></radialGradient>
+          <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#27e8d6"/></marker>
+        </defs>
+        <text x="20" y="22" fill="#9b4dff" font-family="Monoton" font-size="12" letter-spacing="2">ELEVATION — FRONT VIEW</text>
+
+        <!-- glowing donut overhead -->
+        <line x1="300" y1="40" x2="300" y2="66" stroke="#b9a7df" stroke-width="1"/>
+        <circle cx="300" cy="92" r="46" fill="url(#glow)"/>
+        <circle cx="300" cy="92" r="34" fill="none" stroke="url(#neon)" stroke-width="9"/>
+        <circle cx="300" cy="92" r="34" fill="none" stroke="#fff" stroke-width="1.5" opacity=".8"/>
+        <text x="300" y="158" fill="#ff2e88" font-family="Monoton" font-size="10" text-anchor="middle">glowing donut</text>
+
+        <!-- hanging menu -->
+        <line x1="120" y1="52" x2="128" y2="86" stroke="#b9a7df" stroke-width="1"/>
+        <line x1="220" y1="52" x2="212" y2="86" stroke="#b9a7df" stroke-width="1"/>
+        <rect x="120" y="86" width="100" height="40" rx="4" fill="#1e0d44" stroke="#27e8d6"/>
+        <text x="170" y="110" fill="#ffd166" font-family="Bungee" font-size="10" text-anchor="middle">MENU</text>
+        <g fill="#ff2e88"><circle cx="130" cy="126" r="2"/><circle cx="150" cy="126" r="2"/><circle cx="170" cy="126" r="2"/><circle cx="190" cy="126" r="2"/><circle cx="210" cy="126" r="2"/></g>
+
+        <!-- counter -->
+        <rect x="140" y="190" width="320" height="50" fill="#2a1357" stroke="#ff2e88" stroke-width="1.4"/>
+        <rect x="134" y="182" width="332" height="9" rx="2" fill="#150a2e" stroke="#27e8d6"/>
+        <!-- led washes -->
+        <line x1="138" y1="192" x2="462" y2="192" stroke="#27e8d6" stroke-width="1.6" opacity=".85"/>
+        <line x1="146" y1="239" x2="454" y2="239" stroke="#ff2e88" stroke-width="2.4" opacity=".7"/>
+        <!-- hatch hinge + arc -->
+        <line x1="400" y1="190" x2="400" y2="240" stroke="#27e8d6" stroke-width="2.4" stroke-dasharray="4 4"/>
+        <path d="M430 190 A 46 46 0 0 1 478 226" fill="none" stroke="#27e8d6" stroke-width="1.4" marker-end="url(#ah)"/>
+        <text x="430" y="210" fill="#27e8d6" font-family="Monoton" font-size="8" text-anchor="middle">lift-up</text>
+
+        <!-- decorated skirt: hanging things -->
+        <g>
+          <path d="M160 240 l8 16 l8 -16 z" fill="#ff8a4c"/>
+          <path d="M184 240 l8 16 l8 -16 z" fill="#27e8d6"/>
+          <path d="M208 240 l8 16 l8 -16 z" fill="#ff2e88"/>
+          <path d="M232 240 l8 16 l8 -16 z" fill="#ffd166"/>
+          <circle cx="264" cy="250" r="6" fill="none" stroke="#27e8d6" stroke-width="2"/>
+          <circle cx="286" cy="250" r="6" fill="none" stroke="#ff2e88" stroke-width="2"/>
+          <path d="M312 240 l6 18 M306 248 l12 0" stroke="#9b4dff" stroke-width="2"/>
+          <path d="M336 240 c 6 8 -6 12 0 20" stroke="#ffd166" stroke-width="2" fill="none"/>
+        </g>
+        <text x="250" y="282" fill="#b9a7df" font-size="10" text-anchor="middle">dressed skirt — tassels, rings, noodles, palms (LED-safe, no heat)</text>
+
+        <!-- pool ladder -->
+        <g stroke="#cfe9ff" stroke-width="3" fill="none">
+          <path d="M508 172 q 14 -14 28 0"/>
+          <line x1="508" y1="172" x2="508" y2="256"/><line x1="536" y1="172" x2="536" y2="256"/>
+          <line x1="508" y1="196" x2="536" y2="196"/><line x1="508" y1="216" x2="536" y2="216"/><line x1="508" y1="236" x2="536" y2="236"/>
+        </g>
+        <line x1="508" y1="172" x2="508" y2="256" stroke="#27e8d6" stroke-width="1" opacity=".6"/>
+        <text x="522" y="282" fill="#b9a7df" font-size="10" text-anchor="middle">pool ladder</text>
+      </svg>
+      <div class="cap">SCHEMATIC ONLY · NOT TO SCALE · MIRROR FOR LEFT-HAND HATCH</div>
+    </div>
+  </section>
+
+  <!-- 03 GLOW-UP -->
+  <section>
+    <div class="sec-no">03 — THE €100 GLOW-UP</div>
+    <h2>Cheap, fast, <span class="c">no rebuild</span></h2>
+    <div class="steps">
+      <div class="step"><h4>Start from what you've got</h4><small>Use an existing counter, or scavenge free pallets / "zu verschenken" timber on Kleinanzeigen for the box. €100 is for the look, not new ply + tile.</small></div>
+      <div class="step"><h4>Paint it Miami</h4><small>Roller the front midnight purple, then mask and spray hot-pink + aqua blocks or a sunset fade. One can of each goes a long way.</small></div>
+      <div class="step"><h4>Hang the donut</h4><small>An inflatable donut pool float, wrapped or lined with your LED strip, hung over the bar centre on clear wire. Instant centrepiece.</small></div>
+      <div class="step"><h4>Mount the ladder</h4><small>Bolt a secondhand chrome pool ladder to one end as pure icon — bottle rack, towel rail, or just the photo moment.</small></div>
+      <div class="step"><h4>Dress the skirt</h4><small>Run a batten under the worktop lip and hang things from it: neon tassels, mini swim rings, foam noodles, plastic palms, a fringe curtain.</small></div>
+      <div class="step"><h4>Light + lock the hatch</h4><small>LED wash under the top lip and toe-kick; a piano hinge + safety chain + barrel bolt on the lift-up hatch so it stays put.</small></div>
+    </div>
+
+    <div class="callout">
+      <h4>Keep it fire-safe</h4>
+      <ul>
+        <li><b>Cold light only:</b> LED strips run cool — perfect. No candles, halogen or hot bulbs near fabric, foam or the PVC donut (all flammable).</li>
+        <li><b>Treat the fabric:</b> spray fringe/curtains with a <b>flame-retardant (B1 / DIN 4102 "schwer entflammbar")</b> spray — required for most public venues in Berlin.</li>
+        <li><b>Power safely:</b> LEDs on a correctly sized PSU and an <b>RCD/FI</b> socket; don't daisy-chain cheap adapters.</li>
+        <li><b>Clear exits + extinguisher</b> nearby, and keep the dressed skirt off the floor so it can't snag or trail.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 04 FEATURES -->
+  <section>
+    <div class="sec-no">04 — SIGNATURE MOVES</div>
+    <h2>The fun bits</h2>
+    <div class="grid">
+      <div class="card"><div class="ic">🍩</div><h4>Glowing donut</h4><p>Inflatable donut float + LED strip, hung over the bar. Reads as a halo / pool float at once — very Miami, very cheap. Swap colours via the strip's remote.</p></div>
+      <div class="card"><div class="ic">🪜</div><h4>Iconic pool ladder</h4><p>A real chrome pool ladder on one end. Chrome catches the neon, screams "pool", and earns its keep as a bottle/towel rack. Secondhand on Kleinanzeigen.</p></div>
+      <div class="card"><div class="ic">🎏</div><h4>Dressed skirt</h4><p>The dead bottom panel becomes the best part: a batten of hung tassels, mini swim-rings, noodles and plastic palms. Cheap, textural, hides the structure.</p></div>
+      <div class="card"><div class="ic">🌴</div><h4>Miami colour</h4><p>Midnight purple base, hot-pink + aqua neon blocks, sunset fade. Done with a few spray cans and your LED — no tiling, no expense.</p></div>
+      <div class="card"><div class="ic">💡</div><h4>LED plan</h4><p>Your strip does triple duty: line the donut, wash the top lip and toe-kick, backlight the menu. One remote to flip pink → aqua → purple.</p></div>
+      <div class="card"><div class="ic">🪧</div><h4>Hanging menu</h4><p>An offcut board, painted, backlit by the strip, hung on wire. Group drinks as lanes/pools; a "Nichtschwimmer" line for the soft stuff.</p></div>
+    </div>
+  </section>
+
+  <!-- 05 BUDGET -->
+  <section>
+    <div class="sec-no">05 — BUDGET (BERLIN, EUR)</div>
+    <h2>Around <span class="p">€100</span>, honestly</h2>
+    <p>Assumes the counter shell already exists (or is scavenged free) and you already have the LED strip. This is the transformation, not a new build.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Item</th><th class="num">€</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="item">Spray paint (purple + pink + aqua)</td><td class="num">18</td><td>Bauhaus / OBI</td></tr>
+          <tr><td class="item">Inflatable donut float (for the light ring)</td><td class="num">10</td><td>Amazon / 1€-shop</td></tr>
+          <tr><td class="item">Secondhand pool ladder</td><td class="num">20</td><td>Kleinanzeigen</td></tr>
+          <tr><td class="item">Skirt decor: tassels, noodles, mini rings, palms</td><td class="num">15</td><td>flea market / Tedi</td></tr>
+          <tr><td class="item">Extra LED bits (connector, diffuser, fairy set)</td><td class="num">12</td><td>Bauhaus / Amazon</td></tr>
+          <tr><td class="item">Menu board offcut + paint</td><td class="num">6</td><td>Holz Possling offcut bin</td></tr>
+          <tr><td class="item">Flame-retardant B1 spray (for fabric)</td><td class="num">12</td><td>Amazon / theatre supply</td></tr>
+          <tr><td class="item">Fixings: hooks, wire, chain, zip ties, tape</td><td class="num">10</td><td>any DIY store</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td>Total</td><td class="num">~103</td><td>materials only</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <p class="src">Stay near €100 by <b>not buying new structure</b>: paint, light and prop a counter you own or scavenge. New plywood + tiles + worktop is what blew up the first budget — leave it out.</p>
+  </section>
+
+  <div class="foot">
+    <p>One thing I assumed so the €100 works: you've <b>already got (or can scavenge) the counter box</b> and the LED strip, so this budget is the Miami glow-up only. If you actually need the counter built from scratch too, that's a separate (bigger) number — say the word and I'll add a bare-bones build line for reclaimed timber. Want me to spec the exact LED layout for the donut + skirt next?</p>
+  </div>
+</main>
+</body>
+</html>
