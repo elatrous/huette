@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HÜTTE — crew portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800;900&family=Hanken+Grotesk:ital,wght@0,300..900;1,300..900&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2EFE8;
+    --paper-2:#E8E4DA;
+    --ink:#0A0A08;
+    --ink-2:#3A3A36;
+    --ink-3:#6B6B65;
+    --line:#0A0A08;
+    --hi:#FF3D2E;
+    --hi-dark:#C42818;
+    --amber:#F5B800;
+    --green:#1F6B3F;
+    --blue:#2845D6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Hanken Grotesk',sans-serif;
+    font-size:15px;line-height:1.5;
+    min-height:100vh;
+    /* faint print-noise */
+    background-image:
+      radial-gradient(circle at 15% 25%, rgba(10,10,8,0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 70%, rgba(10,10,8,0.02) 1px, transparent 1px);
+    background-size:8px 8px, 11px 11px;
+  }
+  a{color:var(--ink);}
+  .mono{font-family:'IBM Plex Mono',monospace;letter-spacing:.01em;}
+  .display{font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    text-transform:uppercase;letter-spacing:-.005em;line-height:.9;}
+
+  /* TOP BAR */
+  .topbar{
+    position:sticky;top:0;z-index:100;
+    background:var(--ink);color:var(--paper);
+    padding:10px 24px;display:flex;justify-content:space-between;align-items:center;
+    font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+    letter-spacing:.08em;text-transform:uppercase;
+    border-bottom:2px solid var(--hi);
+  }
+  .topbar .wordmark{font-family:'Big Shoulders Display',sans-serif;
+    font-weight:900;font-size:1.3rem;letter-spacing:.06em;color:var(--paper);}
+  .topbar .wordmark .dot{color:var(--hi);}
+  .topbar .right{display:flex;gap:24px;align-items:center;}
+  .topbar .live{display:flex;gap:8px;align-items:center;}
+  .topbar .live::before{content:"";width:7px;height:7px;background:var(--hi);
+    border-radius:50%;animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  @media(max-width:760px){.topbar .right .hide-mobile{display:none;}}
+
+  /* HERO BAND */
+  .hero{
+    border-bottom:1px solid var(--line);
+    padding:36px 24px 28px;background:var(--paper);
+    display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;
+  }
+  .hero .left .crumb{font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+    text-transform:uppercase;letter-spacing:.18em;color:var(--ink-3);margin-bottom:14px;}
+  .hero .left .crumb .sep{color:var(--hi);margin:0 8px;}
+  .hero .left h1{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:900;
+    font-size:clamp(3.2rem,8vw,7rem);line-height:.88;letter-spacing:-.01em;
+    text-transform:uppercase;color:var(--ink);}
+  .hero .left h1 .red{color:var(--hi);}
+  .hero .left .sub{font-family:'IBM Plex Mono',monospace;font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.16em;color:var(--ink-2);margin-top:12px;}
+  .hero .countdown{text-align:right;font-family:'IBM Plex Mono',monospace;}
+  .hero .countdown .lbl{font-size:.66rem;text-transform:uppercase;letter-spacing:.18em;
+    color:var(--ink-3);margin-bottom:6px;}
+  .hero .countdown .num{font-family:'Big Shoulders Display',sans-serif;
+    font-weight:900;font-size:5rem;line-height:.9;color:var(--hi);}
+  .hero .countdown .unit{font-size:.7rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-2);margin-top:-4px;}
+  @media(max-width:760px){.hero{grid-template-columns:1fr;}.hero .countdown{text-align:left;}}
+
+  /* AWARENESS QUICK ACCESS — ALWAYS VISIBLE */
+  .awareness-bar{
+    background:var(--hi);color:var(--paper);
+    padding:18px 24px;
+    display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+    border-bottom:1px solid var(--ink);
+  }
+  .awareness-bar .label{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:900;
+    font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em;
+    border:2px solid var(--paper);padding:6px 12px;}
+  .awareness-bar .body{font-family:'Hanken Grotesk',sans-serif;font-size:.92rem;line-height:1.4;}
+  .awareness-bar .body strong{font-weight:700;}
+  .awareness-bar .quick{display:flex;gap:14px;flex-wrap:wrap;
+    font-family:'IBM Plex Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;}
+  .awareness-bar .quick a{
+    color:var(--paper);text-decoration:none;
+    border:1px solid var(--paper);padding:7px 12px;
+    transition:background .2s;}
+  .awareness-bar .quick a:hover{background:var(--paper);color:var(--hi);}
+  @media(max-width:760px){.awareness-bar{grid-template-columns:1fr;}}
+
+  /* SECTION */
+  section{padding:48px 24px;border-bottom:1px solid var(--line);}
+  section:nth-child(even of section){background:var(--paper-2);}
+  .container{max-width:1320px;margin:0 auto;}
+  .sec-head{
+    display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:baseline;
+    margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--ink);
+  }
+  .sec-num{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:900;
+    font-size:2.4rem;line-height:1;color:var(--hi);letter-spacing:-.01em;}
+  .sec-title{
+    font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    font-size:1.8rem;text-transform:uppercase;letter-spacing:.01em;color:var(--ink);line-height:1;}
+  .sec-meta{font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+    text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);}
+  .sec-meta a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--hi);}
+  .sec-meta a:hover{color:var(--hi);}
+
+  /* OPS GRID — current event */
+  .ops-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:980px){.ops-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.ops-grid{grid-template-columns:1fr;}}
+  .ops-card{
+    background:var(--paper);border:1px solid var(--ink);padding:20px;
+    display:flex;flex-direction:column;gap:10px;
+    transition:transform .15s,background .15s;
+    text-decoration:none;color:var(--ink);
+  }
+  .ops-card:hover{background:var(--ink);color:var(--paper);transform:translate(-2px,-2px);
+    box-shadow:4px 4px 0 var(--hi);}
+  .ops-card:hover .ops-meta{color:var(--paper);}
+  .ops-card:hover .ops-tag{border-color:var(--paper);color:var(--paper);}
+  .ops-card .ops-tag{font-family:'IBM Plex Mono',monospace;font-size:.62rem;
+    text-transform:uppercase;letter-spacing:.14em;border:1px solid var(--ink);
+    padding:3px 7px;align-self:flex-start;}
+  .ops-card .ops-title{font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    font-size:1.25rem;text-transform:uppercase;letter-spacing:.005em;line-height:1.05;}
+  .ops-card .ops-meta{font-family:'IBM Plex Mono',monospace;font-size:.66rem;
+    color:var(--ink-3);letter-spacing:.08em;margin-top:auto;}
+
+  /* DRIVE INDEX (the main section listing 00-10) */
+  .drive-row{
+    display:grid;grid-template-columns:54px 1.6fr 2.4fr 1fr auto;gap:18px;align-items:start;
+    padding:18px 0;border-top:1px solid var(--ink);
+    transition:background .15s;
+  }
+  .drive-row:hover{background:rgba(255,61,46,.05);}
+  .drive-row:last-of-type{border-bottom:1px solid var(--ink);}
+  .drive-row .n{font-family:'Big Shoulders Display',sans-serif;font-weight:900;
+    font-size:1.6rem;color:var(--hi);line-height:1;padding-top:2px;}
+  .drive-row .name{font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    font-size:1.2rem;text-transform:uppercase;letter-spacing:.005em;line-height:1.1;padding-top:4px;}
+  .drive-row .name .de{font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:.66rem;
+    text-transform:none;color:var(--ink-3);letter-spacing:.06em;display:block;margin-top:4px;}
+  .drive-row .contents{font-size:.88rem;color:var(--ink-2);line-height:1.45;padding-top:4px;}
+  .drive-row .contents em{font-style:normal;color:var(--hi);font-weight:600;}
+  .drive-row .status{font-family:'IBM Plex Mono',monospace;font-size:.66rem;
+    text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);padding-top:4px;}
+  .drive-row .status .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--ink-3);margin-right:6px;vertical-align:middle;}
+  .drive-row .status.active .dot{background:var(--green);}
+  .drive-row .status.warm .dot{background:var(--amber);}
+  .drive-row .status.cold .dot{background:var(--ink-3);}
+  .drive-row .open{font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+    text-transform:uppercase;letter-spacing:.14em;align-self:center;}
+  .drive-row .open a{color:var(--ink);text-decoration:none;
+    border:1px solid var(--ink);padding:7px 14px;
+    transition:background .15s,color .15s;display:inline-block;}
+  .drive-row .open a:hover{background:var(--hi);color:var(--paper);border-color:var(--hi);}
+  @media(max-width:880px){
+    .drive-row{grid-template-columns:42px 1fr auto;gap:12px;}
+    .drive-row .contents,.drive-row .status{grid-column:2 / -1;}
+  }
+
+  /* AWARENESS FULL MODULE */
+  .awareness-full{background:var(--ink);color:var(--paper);}
+  .awareness-full .sec-head{border-bottom-color:var(--hi);}
+  .awareness-full .sec-num{color:var(--hi);}
+  .awareness-full .sec-title{color:var(--paper);}
+  .awareness-full .sec-meta{color:rgba(242,239,232,.6);}
+  .aw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media(max-width:880px){.aw-grid{grid-template-columns:1fr;}}
+  .aw-card{
+    background:transparent;border:1px solid rgba(242,239,232,.3);
+    padding:22px;display:flex;flex-direction:column;gap:10px;
+    transition:border-color .2s,background .2s;
+    text-decoration:none;color:var(--paper);
+  }
+  .aw-card:hover{border-color:var(--hi);background:rgba(255,61,46,.08);}
+  .aw-card.urgent{border-color:var(--hi);background:rgba(255,61,46,.06);}
+  .aw-card .aw-tag{font-family:'IBM Plex Mono',monospace;font-size:.64rem;
+    text-transform:uppercase;letter-spacing:.14em;color:var(--hi);}
+  .aw-card .aw-title{font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    font-size:1.4rem;text-transform:uppercase;line-height:1.05;}
+  .aw-card .aw-body{font-size:.9rem;color:rgba(242,239,232,.78);line-height:1.5;}
+  .aw-card .aw-go{font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+    text-transform:uppercase;letter-spacing:.14em;color:var(--hi);margin-top:auto;}
+
+  /* TWO-COL UTILITY */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  @media(max-width:880px){.two-col{grid-template-columns:1fr;}}
+  .panel h4{font-family:'Big Shoulders Display',sans-serif;font-weight:800;
+    font-size:1.3rem;text-transform:uppercase;letter-spacing:.005em;margin-bottom:12px;
+    padding-bottom:8px;border-bottom:1px solid var(--ink);}
+  .panel ul{list-style:none;}
+  .panel li{padding:9px 0;border-bottom:1px dashed rgba(10,10,8,.15);
+    display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:baseline;}
+  .panel li .it{font-family:'Hanken Grotesk',sans-serif;font-size:.94rem;}
+  .panel li .it strong{font-weight:600;}
+  .panel li .it small{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--ink-3);
+    text-transform:uppercase;letter-spacing:.08em;display:block;margin-top:2px;}
+  .panel li .lbl{font-family:'IBM Plex Mono',monospace;font-size:.6rem;
+    text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);
+    border:1px solid var(--ink-3);padding:2px 6px;}
+  .panel li .lbl.red{color:var(--hi);border-color:var(--hi);}
+  .panel li .lbl.green{color:var(--green);border-color:var(--green);}
+  .panel li a{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink);
+    text-decoration:none;text-transform:uppercase;letter-spacing:.1em;
+    border-bottom:2px solid var(--hi);padding-bottom:1px;}
+  .panel li a:hover{color:var(--hi);}
+
+  /* ARCHIVE TIMELINE */
+  .archive{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+  .arch-cell{border:1px solid var(--ink);padding:14px;background:var(--paper);
+    transition:background .15s;}
+  .arch-cell:hover{background:var(--ink);color:var(--paper);}
+  .arch-cell .year{font-family:'Big Shoulders Display',sans-serif;font-weight:900;
+    font-size:1.5rem;color:var(--hi);}
+  .arch-cell .ev{font-family:'IBM Plex Mono',monospace;font-size:.74rem;
+    text-transform:uppercase;letter-spacing:.06em;line-height:1.4;margin-top:6px;}
+
+  /* FOOTER */
+  footer{padding:50px 24px;border-top:2px solid var(--hi);background:var(--ink);color:var(--paper);}
+  footer .container{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;align-items:start;}
+  @media(max-width:880px){footer .container{grid-template-columns:1fr;}}
+  footer h5{font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+    text-transform:uppercase;letter-spacing:.16em;color:var(--hi);margin-bottom:14px;}
+  footer .big{font-family:'Big Shoulders Display',sans-serif;font-weight:900;
+    font-size:2.2rem;text-transform:uppercase;line-height:1;margin-bottom:14px;}
+  footer p{font-size:.9rem;color:rgba(242,239,232,.7);line-height:1.5;max-width:50ch;}
+  footer ul{list-style:none;font-family:'IBM Plex Mono',monospace;font-size:.74rem;line-height:2;}
+  footer ul a{color:var(--paper);text-decoration:none;border-bottom:1px dotted rgba(242,239,232,.4);}
+  footer ul a:hover{color:var(--hi);border-bottom-color:var(--hi);}
+  footer .colophon{grid-column:1 / -1;border-top:1px solid rgba(242,239,232,.15);
+    padding-top:20px;margin-top:30px;
+    font-family:'IBM Plex Mono',monospace;font-size:.62rem;
+    text-transform:uppercase;letter-spacing:.14em;color:rgba(242,239,232,.4);}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wordmark">HÜTTE<span class="dot">.</span></div>
+  <div class="right">
+    <span class="hide-mobile">crew portal v0.1</span>
+    <span class="hide-mobile">·</span>
+    <span class="mono"><span id="now"></span></span>
+    <span class="live">LIVE</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="left">
+    <div class="crumb">crew <span class="sep">/</span> ops <span class="sep">/</span> 2026 season</div>
+    <h1>The <span class="red">collective</span><br>working file.</h1>
+    <div class="sub">— a single index for everything we keep in drive, in notion, in our heads</div>
+  </div>
+  <div class="countdown">
+    <div class="lbl">Detect Festival 2026</div>
+    <div class="num" id="d-num">—</div>
+    <div class="unit" id="d-unit">SET DATE IN SCRIPT</div>
+  </div>
+</header>
+
+<!-- AWARENESS QUICK ACCESS — ALWAYS VISIBLE AT TOP -->
+<div class="awareness-bar">
+  <div class="label">⚠ Awareness</div>
+  <div class="body">
+    During an event, on-shift, or supporting someone? <strong>The materials below are the first stop.</strong> Crisis takes priority over everything else on this page.
+  </div>
+  <div class="quick">
+    <a href="#awareness">→ full module</a>
+    <a href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">→ drive folder</a>
+  </div>
+</div>
+
+<!-- CURRENT OPS -->
+<section id="ops">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div class="sec-title">Current ops — Detect Festival 2026</div>
+      <div class="sec-meta">last touched <a href="https://drive.google.com/drive/folders/1qqdluN2vrQvF8IkOETGOnSHLexpMQMdA" target="_blank">19 Mar 2026 →</a></div>
+    </div>
+    <div class="ops-grid">
+      <a class="ops-card" href="https://drive.google.com/drive/folders/1qqdluN2vrQvF8IkOETGOnSHLexpMQMdA" target="_blank">
+        <span class="ops-tag">/ FOLDER</span>
+        <div class="ops-title">Detect Festival<br>2026 — root</div>
+        <div class="ops-meta">events / 2026</div>
+      </a>
+      <a class="ops-card" href="https://drive.google.com/drive/folders/1zKEr1RNGibi1yNy19sU1iX1qH5ZtB_aP" target="_blank">
+        <span class="ops-tag">/ FOLDER</span>
+        <div class="ops-title">03 Booking</div>
+        <div class="ops-meta">timetable + budget here</div>
+      </a>
+      <a class="ops-card" href="https://drive.google.com/drive/folders/1qqdluN2vrQvF8IkOETGOnSHLexpMQMdA" target="_blank">
+        <span class="ops-tag">/ SHEET</span>
+        <div class="ops-title">Timetable<br>Hütte × Detect</div>
+        <div class="ops-meta">in 03 booking</div>
+      </a>
+      <a class="ops-card" href="https://drive.google.com/drive/folders/1qqdluN2vrQvF8IkOETGOnSHLexpMQMdA" target="_blank">
+        <span class="ops-tag">/ SHEET</span>
+        <div class="ops-title">Artists Expenses<br>Hütte Budget</div>
+        <div class="ops-meta">in 03 booking</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- DRIVE INDEX — main section -->
+<section id="drive">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div class="sec-title">Drive index — top-level folders</div>
+      <div class="sec-meta">root <a href="https://drive.google.com/drive/folders/1FjzTPr8GfxhHxUuQxT2Gl7dy0vMSYZq0" target="_blank">→ HÜTTE</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">00</div>
+      <div class="name">Orga / Templates<span class="de">Organisation und Vorlagen</span></div>
+      <div class="contents">General finance sheet · Detect Build Up Template · Template Festival 2023. <em>Start every new event here.</em></div>
+      <div class="status warm"><span class="dot"></span>Reference</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1HeEUi_S7mPADnCRy5w71sIkl8RfkjU8g" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">01</div>
+      <div class="name">Events<span class="de">Veranstaltungen</span></div>
+      <div class="contents">Detect Festival 23 / 24 / 25 / <em>26 (active)</em> · Schloss Schönow · 2024 NYE Twist · Archive folder · Detect Hutte Proposal 2025-2026.</div>
+      <div class="status active"><span class="dot"></span>Active</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1d6Bq1XX70J1bwn6pdIQF2hrEZN5wDqR0" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">02</div>
+      <div class="name">Social Media<span class="de">Soziale Medien</span></div>
+      <div class="contents">Network/Collectives sheet · Social Media Guidelines · <em>Passwords doc</em> · Meetings · Posts 2023 · Fitzroy 02_23.</div>
+      <div class="status warm"><span class="dot"></span>Maintained</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1orlUjIhQ6KcQrdZfavJ7l2FPARmBbxCO" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">03</div>
+      <div class="name">Verein<span class="de">Vereinsangelegenheiten</span></div>
+      <div class="contents">Satzung · Gründungsprotokoll · Plan Verein · Vereinsregister. <em>Legal + admin core.</em></div>
+      <div class="status cold"><span class="dot"></span>Archive-y</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/12gk6RZ0Ab-Cr4VdJlDEp3ukZ1yx5ACdZ" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">04</div>
+      <div class="name">Storage<span class="de">Lagerung</span></div>
+      <div class="contents">Matej_Basement_20221111. Sparse — main physical inventory lives elsewhere.</div>
+      <div class="status cold"><span class="dot"></span>Sparse</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1Fu9iUSNFhq9DkDp4j0NJMqj0gVZd3gAv" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">05</div>
+      <div class="name">PA QSC Rental<span class="de">PA-Vermietung</span></div>
+      <div class="contents">How-to doc · QSC Mietvertrag · PA ORGANISATION.xlsx · price list · materials list · archive. <em>Active rental business.</em></div>
+      <div class="status active"><span class="dot"></span>Active</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">06</div>
+      <div class="name">Archive<span class="de">Archiv</span></div>
+      <div class="contents">General Stuff (legacy from 2018) · HütteKalender_Online 2021. <em>Don't delete, don't actively use.</em></div>
+      <div class="status cold"><span class="dot"></span>Frozen</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1qpQNMbnFWVXRJd2vlnAuhjkHlkpWhfUv" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">07</div>
+      <div class="name">Photos &amp; Videos<span class="de">Foto- und Videomaterial</span></div>
+      <div class="contents">Hütte Festival 2019 · Hütte 2022 (Barbara's phone) · Loitz Festspiele · Detect21 · Christa Kupfer 2023 · Snippets · loose images.</div>
+      <div class="status warm"><span class="dot"></span>Growing</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1pnahrTQF0BFzENaTt-UaDW5s6L1Sjdz1" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">08</div>
+      <div class="name">Roster Material<span class="de">Roster + Promo</span></div>
+      <div class="contents">Residents Descriptions · Promo Pics. <em>Use for booking pitches and socials.</em></div>
+      <div class="status warm"><span class="dot"></span>Reference</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1s23ZXf3zqeiZMQieqkOQ4sXLZqKje38m" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">09</div>
+      <div class="name">Performance Group<span class="de">Performance-Gruppe</span></div>
+      <div class="contents">Walking acts · Joanne Dark · Hildergard · Augie &amp; Rapha · Unkraut 2023 · Fusion application · Performance Protokoll · video material.</div>
+      <div class="status warm"><span class="dot"></span>Active</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1KKaLldVlJ8fSJFStMUlfQ6FiBUP6OdcQ" target="_blank">Open ↗</a></div>
+    </div>
+
+    <div class="drive-row">
+      <div class="n">10</div>
+      <div class="name">Awareness<span class="de">Awareness &amp; Peer Support</span></div>
+      <div class="contents">Awareness Guidelines · <em>Peer Support docx</em> · de-escalation handout · grounding exercises · Awareness Shift template. <em>Crisis-time tools.</em></div>
+      <div class="status active"><span class="dot"></span>Essential</div>
+      <div class="open"><a href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">Open ↗</a></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AWARENESS — FULL MODULE -->
+<section class="awareness-full" id="awareness">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div class="sec-title">Awareness — full module</div>
+      <div class="sec-meta">if you're supporting someone right now, start with grounding</div>
+    </div>
+
+    <div class="aw-grid">
+      <a class="aw-card urgent" href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">
+        <div class="aw-tag">/ on-shift starter</div>
+        <div class="aw-title">Awareness Shift Template</div>
+        <div class="aw-body">Use this at the start of every shift. Roles, handoffs, communication channels, current vulnerable folks to watch out for.</div>
+        <div class="aw-go">Open in drive →</div>
+      </a>
+      <a class="aw-card urgent" href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">
+        <div class="aw-tag">/ in-the-moment</div>
+        <div class="aw-title">Grounding Exercises</div>
+        <div class="aw-body">5-4-3-2-1, breath patterns, body anchoring. Practice them before you need them — they don't work if you read them off a phone in a crisis.</div>
+        <div class="aw-go">Open in drive →</div>
+      </a>
+      <a class="aw-card urgent" href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">
+        <div class="aw-tag">/ conflict</div>
+        <div class="aw-title">De-escalation Handout</div>
+        <div class="aw-body">Voice, body, distance. What to say, what not to say. When to bring in another awareness person and when to call medical.</div>
+        <div class="aw-go">Open in drive →</div>
+      </a>
+      <a class="aw-card" href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">
+        <div class="aw-tag">/ aftercare</div>
+        <div class="aw-title">Peer Support (docx)</div>
+        <div class="aw-body">Active listening, holding space without fixing. Boundaries between supporting and counselling — and when to refer onward.</div>
+        <div class="aw-go">Open in drive →</div>
+      </a>
+      <a class="aw-card" href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">
+        <div class="aw-tag">/ doctrine</div>
+        <div class="aw-title">Awareness Guidelines</div>
+        <div class="aw-body">What we mean by awareness at Hütte. Principles, consent culture, expectations, no-tolerance behaviours. Read once a season.</div>
+        <div class="aw-go">Open in drive →</div>
+      </a>
+      <a class="aw-card" href="#contact">
+        <div class="aw-tag">/ on-call</div>
+        <div class="aw-title">Awareness On-Call</div>
+        <div class="aw-body">Crew contact directory below. Awareness lead names + numbers per event are in the shift template.</div>
+        <div class="aw-go">↓ to contact</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- OPERATIONS — PA RENTAL + SOCIAL -->
+<section id="operations">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div class="sec-title">Operations — rental, social, templates</div>
+      <div class="sec-meta">the recurring stuff</div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h4>PA QSC Rental</h4>
+        <ul>
+          <li><span class="lbl green">DOC</span><span class="it"><strong>How-to rent</strong><small>step-by-step internal procedure</small></span><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">Open →</a></li>
+          <li><span class="lbl">PDF</span><span class="it"><strong>QSC Mietvertrag</strong><small>signed rental contract template (DE)</small></span><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">Open →</a></li>
+          <li><span class="lbl">XLSX</span><span class="it"><strong>PA ORGANISATION</strong><small>tracking + scheduling</small></span><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">Open →</a></li>
+          <li><span class="lbl">XLSX</span><span class="it"><strong>Price list</strong><small>current rates per item</small></span><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">Open →</a></li>
+          <li><span class="lbl">DOC</span><span class="it"><strong>Materials list</strong><small>what we have, condition, locations</small></span><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">Open →</a></li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h4>Social Media</h4>
+        <ul>
+          <li><span class="lbl">SHEET</span><span class="it"><strong>Network &amp; Collectives</strong><small>related orgs and contacts</small></span><a href="https://drive.google.com/drive/folders/1orlUjIhQ6KcQrdZfavJ7l2FPARmBbxCO" target="_blank">Open →</a></li>
+          <li><span class="lbl">DOC</span><span class="it"><strong>Social Media Guidelines</strong><small>tone, posting rules, who approves</small></span><a href="https://drive.google.com/drive/folders/1orlUjIhQ6KcQrdZfavJ7l2FPARmBbxCO" target="_blank">Open →</a></li>
+          <li><span class="lbl red">DOC</span><span class="it"><strong>Passwords</strong><small>shared logins — restricted</small></span><a href="https://drive.google.com/drive/folders/1orlUjIhQ6KcQrdZfavJ7l2FPARmBbxCO" target="_blank">Open →</a></li>
+          <li><span class="lbl">FOLDER</span><span class="it"><strong>Meetings</strong><small>notes, agendas</small></span><a href="https://drive.google.com/drive/folders/1orlUjIhQ6KcQrdZfavJ7l2FPARmBbxCO" target="_blank">Open →</a></li>
+          <li><span class="lbl">FOLDER</span><span class="it"><strong>Posts 2023</strong><small>past content archive</small></span><a href="https://drive.google.com/drive/folders/1orlUjIhQ6KcQrdZfavJ7l2FPARmBbxCO" target="_blank">Open →</a></li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h4>Templates &amp; Orga</h4>
+        <ul>
+          <li><span class="lbl green">SHEET</span><span class="it"><strong>General finance sheet</strong><small>budget tracking master</small></span><a href="https://drive.google.com/drive/folders/1HeEUi_S7mPADnCRy5w71sIkl8RfkjU8g" target="_blank">Open →</a></li>
+          <li><span class="lbl">SHEET</span><span class="it"><strong>Detect Build-Up Template</strong><small>copy this for each new event</small></span><a href="https://drive.google.com/drive/folders/1HeEUi_S7mPADnCRy5w71sIkl8RfkjU8g" target="_blank">Open →</a></li>
+          <li><span class="lbl">FOLDER</span><span class="it"><strong>Template Festival 2023</strong><small>full structure reference</small></span><a href="https://drive.google.com/drive/folders/1HeEUi_S7mPADnCRy5w71sIkl8RfkjU8g" target="_blank">Open →</a></li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h4>Verein (Legal)</h4>
+        <ul>
+          <li><span class="lbl">PDF</span><span class="it"><strong>Satzung</strong><small>articles of association (DE)</small></span><a href="https://drive.google.com/drive/folders/12gk6RZ0Ab-Cr4VdJlDEp3ukZ1yx5ACdZ" target="_blank">Open →</a></li>
+          <li><span class="lbl">PDF</span><span class="it"><strong>Gründungsprotokoll</strong><small>founding minutes</small></span><a href="https://drive.google.com/drive/folders/12gk6RZ0Ab-Cr4VdJlDEp3ukZ1yx5ACdZ" target="_blank">Open →</a></li>
+          <li><span class="lbl">DOC</span><span class="it"><strong>Plan Verein</strong><small>roadmap, roles</small></span><a href="https://drive.google.com/drive/folders/12gk6RZ0Ab-Cr4VdJlDEp3ukZ1yx5ACdZ" target="_blank">Open →</a></li>
+          <li><span class="lbl">PDF</span><span class="it"><strong>Vereinsregister info</strong><small>registry status</small></span><a href="https://drive.google.com/drive/folders/12gk6RZ0Ab-Cr4VdJlDEp3ukZ1yx5ACdZ" target="_blank">Open →</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section id="archive">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div class="sec-title">Event archive</div>
+      <div class="sec-meta">all past editions</div>
+    </div>
+    <div class="archive">
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1d6Bq1XX70J1bwn6pdIQF2hrEZN5wDqR0" target="_blank">
+        <div class="year">2026</div>
+        <div class="ev">Detect Festival 2026<br><em style="color:var(--hi);font-style:normal">active</em></div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1d6Bq1XX70J1bwn6pdIQF2hrEZN5wDqR0" target="_blank">
+        <div class="year">2025</div>
+        <div class="ev">Detect Festival 2025<br>Detect Hutte Proposal</div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1d6Bq1XX70J1bwn6pdIQF2hrEZN5wDqR0" target="_blank">
+        <div class="year">2024</div>
+        <div class="ev">Detect Festival 2024<br>2024 NYE Twist</div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1d6Bq1XX70J1bwn6pdIQF2hrEZN5wDqR0" target="_blank">
+        <div class="year">2023</div>
+        <div class="ev">Detect Festival 2023<br>Schloss Schönow<br>Unkraut 2023<br>Christa Kupfer</div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1pnahrTQF0BFzENaTt-UaDW5s6L1Sjdz1" target="_blank">
+        <div class="year">2022</div>
+        <div class="ev">Hütte 2022<br>(Barbara's phone)</div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1pnahrTQF0BFzENaTt-UaDW5s6L1Sjdz1" target="_blank">
+        <div class="year">2021</div>
+        <div class="ev">Detect21<br>HütteKalender Online</div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1pnahrTQF0BFzENaTt-UaDW5s6L1Sjdz1" target="_blank">
+        <div class="year">2019</div>
+        <div class="ev">Hütte Festival 2019</div>
+      </a>
+      <a class="arch-cell" href="https://drive.google.com/drive/folders/1qpQNMbnFWVXRJd2vlnAuhjkHlkpWhfUv" target="_blank">
+        <div class="year">2018+</div>
+        <div class="ev">Legacy / General<br>(in archive folder)</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CREW & CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div class="sec-title">Crew + contact</div>
+      <div class="sec-meta">add names + numbers when you onboard</div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <h4>Core circle (drive-attested)</h4>
+        <ul>
+          <li><span class="lbl">@</span><span class="it"><strong>Tinka</strong><small>legvarttinka@gmail.com · owner of many root files</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">org</span></li>
+          <li><span class="lbl">@</span><span class="it"><strong>Matej Ficko</strong><small>ficko.matej@gmail.com · events archive</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">events</span></li>
+          <li><span class="lbl">@</span><span class="it"><strong>Nadine Olk</strong><small>nadine.olk22@gmail.com · PA rental, photos</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">rental</span></li>
+          <li><span class="lbl">@</span><span class="it"><strong>Gyo</strong><small>gyohaluka@gmail.com · 03 booking</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">booking</span></li>
+          <li><span class="lbl red">@</span><span class="it"><strong>huettecollective</strong><small>huettecollective@gmail.com · official collective inbox</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">official</span></li>
+          <li><span class="lbl">@</span><span class="it"><strong>Mylo</strong><small>see sibling site · DJ + booking + ops</small></span><a href="mylo-hub.html">↗ hub</a></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h4>Awareness on-call</h4>
+        <ul>
+          <li><span class="lbl red">!</span><span class="it"><strong>Per-event awareness lead</strong><small>name + phone in shift template — update before doors</small></span><a href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">Open →</a></li>
+          <li><span class="lbl">!</span><span class="it"><strong>Backup awareness</strong><small>second name in shift template</small></span><a href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">Open →</a></li>
+          <li><span class="lbl">+</span><span class="it"><strong>Medical / nearest hospital</strong><small>fill in per-venue before each event</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">tbd</span></li>
+          <li><span class="lbl">+</span><span class="it"><strong>Berlin Krisendienst</strong><small>030 / 390 63 00 — mental-health crisis, 24/7, free</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">public</span></li>
+          <li><span class="lbl">+</span><span class="it"><strong>Drogennotruf Berlin</strong><small>030 / 192 37 — drug emergencies, anonymous</small></span><span class="mono" style="font-size:.66rem;color:var(--ink-3)">public</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="container">
+    <div>
+      <h5>About this portal</h5>
+      <div class="big">A working tool,<br>not a website.</div>
+      <p>This page indexes the Hütte shared drive and adds quick paths to the things the crew needs most: awareness materials, current event ops, PA rental, and the archive. Bookmark it. Update it. Drive remains the source of truth.</p>
+    </div>
+    <div>
+      <h5>Drive shortcuts</h5>
+      <ul>
+        <li><a href="https://drive.google.com/drive/folders/1FjzTPr8GfxhHxUuQxT2Gl7dy0vMSYZq0" target="_blank">↗ HÜTTE root</a></li>
+        <li><a href="https://drive.google.com/drive/folders/1qqdluN2vrQvF8IkOETGOnSHLexpMQMdA" target="_blank">↗ Detect Festival 2026</a></li>
+        <li><a href="https://drive.google.com/drive/folders/1zKEr1RNGibi1yNy19sU1iX1qH5ZtB_aP" target="_blank">↗ 03 Booking</a></li>
+        <li><a href="https://drive.google.com/drive/folders/1QyKOvJufL8_6WSX5b9IXzatwDTR16MkG" target="_blank">↗ Awareness</a></li>
+        <li><a href="https://drive.google.com/drive/folders/1CbXWGSMgGosSuCKSpWNYlnGDNmgJo6vH" target="_blank">↗ PA Rental</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Related</h5>
+      <ul>
+        <li><a href="mylo-hub.html">↗ Mylo — personal hub</a></li>
+        <li><a href="mailto:huettecollective@gmail.com">↗ huettecollective@gmail.com</a></li>
+        <li>↗ Notion teamspace <span style="color:rgba(242,239,232,.4)">[add link]</span></li>
+        <li>↗ Public website <span style="color:rgba(242,239,232,.4)">[add link]</span></li>
+      </ul>
+    </div>
+    <div class="colophon">
+      Crew portal v0.1 · synthesised from the shared drive on <span id="ts"></span> · links go to drive, drive permissions still apply · this page is just an index, treat the drive as source of truth · last drive activity 19 Mar 2026
+    </div>
+  </div>
+</footer>
+
+<script>
+  // current time
+  function setNow(){
+    const d = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('now').textContent =
+      d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())+' '+
+      pad(d.getUTCHours())+':'+pad(d.getUTCMinutes())+' UTC';
+  }
+  setNow(); setInterval(setNow, 60000);
+  document.getElementById('ts').textContent = new Date().toISOString().split('T')[0];
+
+  // Detect Festival 2026 countdown — set the real date here, then num/unit fill in
+  // Format: 'YYYY-MM-DD' or null. Leave null to show the "set date" placeholder.
+  const DETECT_DATE = null;  // e.g. '2026-08-21'
+  if (DETECT_DATE){
+    const target = new Date(DETECT_DATE + 'T00:00:00Z').getTime();
+    const now = Date.now();
+    const days = Math.ceil((target - now) / (1000*60*60*24));
+    document.getElementById('d-num').textContent = days > 0 ? 'D−'+days : (days===0 ? 'TODAY' : 'D+'+Math.abs(days));
+    document.getElementById('d-unit').textContent = 'TO '+DETECT_DATE;
+  }
+</script>
+
+</body>
+</html>
